@@ -1,4 +1,6 @@
-import tensorflow as tf
+
+# import tensorflow as tf  # Causes probs on Imam's comp
+
 from baselines.ppo2 import ppo2
 from baselines.common.models import build_impala_cnn
 from baselines.common.mpi_util import setup_mpi_gpus
@@ -12,6 +14,9 @@ from baselines.common.vec_env import (
 from baselines import logger
 from mpi4py import MPI
 import argparse
+
+# Trying the actor model
+from actor import Actor
 
 def train_fn(env_name, num_envs, distribution_mode, num_levels, start_level, timesteps_per_proc, is_test_worker=False, log_dir='/tmp/procgen', comm=None):
     learning_rate = 5e-4
@@ -42,16 +47,21 @@ def train_fn(env_name, num_envs, distribution_mode, num_levels, start_level, tim
 
     venv = VecNormalize(venv=venv, ob=False)
 
-    logger.info("creating tf session")
-    setup_mpi_gpus()
-    config = tf.ConfigProto()
-    config.gpu_options.allow_growth = True #pylint: disable=E1101
-    sess = tf.Session(config=config)
-    sess.__enter__()
+    # logger.info("creating tf session")
+    # setup_mpi_gpus()
+    # config = tf.ConfigProto()
+    # config.gpu_options.allow_growth = True #pylint: disable=E1101
+    # sess = tf.Session(config=config)
+    # sess.__enter__()
 
-    conv_fn = lambda x: build_impala_cnn(x, depths=[16,32,32], emb_size=256)
+    # They use an "impala_cnn" - https://github.com/too-easy-for-me/baselines/blob/master/baselines/common/models.py
+    # conv_fn = lambda x: build_impala_cnn(x, depths=[16,32,32], emb_size=256)
+
+    conv_fn = Actor(num_envs , 15) 
 
     logger.info("training")
+
+    # They use PPO2 to update policy: https://stable-baselines.readthedocs.io/en/master/modules/ppo2.html 
     ppo2.learn(
         env=venv,
         network=conv_fn,
