@@ -18,9 +18,11 @@ def train_fn(env_name, num_envs, distribution_mode, num_levels, start_level, tim
     ent_coef = .01
     gamma = .999
     lam = .95
-    nsteps = 256
+    # nsteps = 256
+    nsteps = 8
     nminibatches = 8
     ppo_epochs = 3
+    # ppo_epochs = 1
     clip_range = .2
     use_vf_clipping = True
 
@@ -55,7 +57,8 @@ def train_fn(env_name, num_envs, distribution_mode, num_levels, start_level, tim
     ppo2.learn(
         env=venv,
         network=conv_fn,
-        total_timesteps=timesteps_per_proc,
+        # total_timesteps=timesteps_per_proc,
+        total_timesteps=5000,
         save_interval=0,
         nsteps=nsteps,
         nminibatches=nminibatches,
