@@ -13,13 +13,13 @@ from baselines import logger
 from mpi4py import MPI
 import argparse
 
-def train_fn(env_name, num_envs, distribution_mode, num_levels, start_level, timesteps_per_proc, is_test_worker=False, log_dir='/tmp/procgen', comm=None):
+def train_fn(env_name, num_envs, distribution_mode, num_levels, start_level, timesteps_per_proc, is_test_worker=False, log_dir='~/Desktop/cs182/final/train_procgen/results', comm=None):
     learning_rate = 5e-4
     ent_coef = .01
     gamma = .999
     lam = .95
     # nsteps = 256
-    nsteps = 8
+    nsteps = 16
     nminibatches = 8
     ppo_epochs = 3
     # ppo_epochs = 1
@@ -58,7 +58,7 @@ def train_fn(env_name, num_envs, distribution_mode, num_levels, start_level, tim
         env=venv,
         network=conv_fn,
         # total_timesteps=timesteps_per_proc,
-        total_timesteps=5000,
+        total_timesteps=10240,
         save_interval=0,
         nsteps=nsteps,
         nminibatches=nminibatches,
